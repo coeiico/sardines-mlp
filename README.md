@@ -68,6 +68,7 @@ sardines-mlp/
 ├── train.py                 CLI; --quick runs the CPU smoke test
 ├── predict.py               load weights and run inference
 ├── analyze.py               baselines, probes, interventions, plots
+├── figures/                 README figures: LaTeX sources, data and built PNGs
 ├── notebooks/               marimo notebooks for exploration
 ├── tests/
 └── runs/                    outputs, gitignored
