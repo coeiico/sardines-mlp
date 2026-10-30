@@ -1,11 +1,4 @@
-"""
-Scaffold tests that keep CI green until the real ones land.
-
-Tests to add:
-- data generators
-- tensor shapes
-- one tiny overfit check
-"""
+"""Run bookkeeping: device detection and repeatable seeding."""
 
 import torch
 
