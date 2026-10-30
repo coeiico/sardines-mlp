@@ -44,6 +44,7 @@ just setup              # uv sync, then install the pre-commit hooks
 just quick              # CPU smoke test, under 5 minutes
 just train              # full run; flags pass through, e.g. --run-name wd1.0-seed0
 just analyze <run>      # baselines, probes, interventions and plots
+just cloud <sweep>      # the same runs on Modal, one GPU each; see .agents/instructions/cloud.md
 just test               # pytest
 just check              # ruff and basedpyright, as in CI
 ```
@@ -68,6 +69,7 @@ sardines-mlp/
 ├── train.py                 CLI; --quick runs the CPU smoke test
 ├── predict.py               load weights and run inference
 ├── analyze.py               baselines, probes, interventions, plots
+├── cloud.py                 the same runs on Modal, one GPU per run
 ├── figures/                 README figures: LaTeX sources, data and built PNGs
 ├── notebooks/               marimo notebooks for exploration
 ├── tests/

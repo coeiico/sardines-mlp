@@ -26,6 +26,7 @@ dev = [
   'beartype',
   'marimo',
   'pre-commit',
+  'modal>=1.6.3',
 ]
 
 [build-system]
@@ -76,4 +77,4 @@ addopts = '--jaxtyping-packages=sardines_mlp,beartype.beartype'
 
 [tool.basedpyright]
 typeCheckingMode = 'standard'
-include = ['src', 'tests', 'train.py', 'predict.py', 'analyze.py']
+include = ['src', 'tests', 'train.py', 'predict.py', 'analyze.py', 'cloud.py']

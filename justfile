@@ -64,3 +64,16 @@ notebook name='explore':
 # Upload a run's weights, metrics and plots to the Hugging Face Hub
 push run:
   uv run hf upload {{hf_user}}/{{repo}} runs/{{run}}
+
+# Run a sweep from cloud.py on Modal, one GPU per run, e.g. just cloud seeds (.agents/instructions/cloud.md)
+cloud sweep *args:
+  uv run modal run --detach cloud.py::sweep --name {{sweep}} {{args}}
+
+# One run on Modal, e.g. just cloud-train lr3e-3-seed0 '--optim.lr 3e-3'
+cloud-train run flags='' *args:
+  uv run modal run --detach cloud.py::single --name {{run}} --flags '{{flags}}' {{args}}
+
+# Copy a run from the Modal Volume into runs/<run>/
+cloud-get run:
+  mkdir -p runs
+  uv run modal volume get {{repo}}-runs {{run}} runs
