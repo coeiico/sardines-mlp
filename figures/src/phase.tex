@@ -1,0 +1,38 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{latentfig}
+\input{roles}
+\input{build/phase-values}
+\pgfplotsset{
+  phase grid/.style={engraved, width=0.4\figwidth, height=0.4\figwidth,
+    xmin=0.0905, xmax=11.05, ymin=0.00905, ymax=1.105, axis on top,
+    xtick={0.1,0.3,1,3,10}, xticklabels={0.1,0.3,1,3,10},
+    ytick={0.01,0.03,0.1,0.3,1}, yticklabels={0.01,0.03,0.1,0.3,1},
+    xlabel={importance of feature 2 / feature 1}},
+}
+\begin{document}
+\begin{figurecanvas}
+\begin{tikzpicture}
+\begin{axis}[phase grid, xmode=log, ymode=log, name=a, ylabel={feature density $1-S$}]
+  \input{build/phase-majority}
+  \node[textlabel, knockout] at (axis cs:0.22,0.6) {not learned};
+  \node[textlabel, knockout, align=center] at (axis cs:4.2,0.6) {feature 2 gets\\the dimension};
+  \node[textlabel, knockout, text=spot] at (axis cs:0.2,0.02) {superposition};
+\end{axis}
+\node[head] at ($(a.north west)+(0,0.25)$) {(a)\enspace What most of the \nSeeds\ seeds do.};
+
+\begin{axis}[phase grid, xmode=log, ymode=log, name=b, at={($(a.east -| a.outer east)+(0.5cm,0)$)}, anchor=west,
+    yticklabels={}]
+  \input{build/phase-lowest}
+  \node[textlabel, knockout] at (axis cs:0.22,0.6) {not learned};
+  \node[textlabel, knockout, align=center] at (axis cs:4.2,0.6) {feature 2 gets\\the dimension};
+  \node[textlabel, knockout, text=spot] at (axis cs:0.2,0.02) {superposition};
+\end{axis}
+\node[head] at ($(b.north west)+(0,0.25)$) {(b)\enspace The lowest-loss seed in each cell.};
+
+\node[note, anchor=north, align=center] at ($(a.south east)!0.5!(b.south west)+(0,-1.15)$)
+  {Two features in one dimension, $\mb{W} = [w_1, w_2]$, \nCells\ settings. Blank: feature 2 dropped, $\abs{w_2} < 0.5$.
+   Back-hatched: feature 2 alone,\\ $\abs{w_1} < 0.5 < \abs{w_2}$. Spot: an antipodal pair, $w_1 w_2 < 0$ with both above 0.5.
+   (a) Dots: the \nSplit\ cells where the seeds disagree.};
+\end{tikzpicture}
+\end{figurecanvas}
+\end{document}

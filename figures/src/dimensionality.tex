@@ -1,0 +1,36 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{latentfig}
+\input{roles}
+\input{build/dim-values}
+\begin{document}
+\begin{figurecanvas}
+\begin{tikzpicture}
+\begin{axis}[engraved, xmode=log, name=a, width=0.74\figwidth, height=0.42\figwidth,
+    xmin=1, xmax=1000, ymin=0, ymax=1.08, xtick={1,10,100,1000}, xticklabels={1,10,100,1\,000},
+    ytick={0,0.25,0.5,0.75,1}, yticklabels={0,0.25,0.5,0.75,1},
+    xlabel={$1/(1-S)$, how rarely a feature is active},
+    ylabel={dimensions per feature}]
+  \foreach \v in {1, 0.75, 0.6667, 0.5, 0.4, 0.375} {
+    \addplot[level line, domain=1:1000] {\v};
+  }
+  \addplot[only marks, mark=o, mark size=0.55pt, mark options={draw=ink!55, line width=0.2pt}]
+    table[x=x, y=y, col sep=comma] {build/dim-points.csv};
+  \foreach \s in {0,...,4} {
+    \addplot[linear model, line width=0.45pt] table[x=x, y=y, col sep=comma] {build/dim-curve-linear-seed\s.csv};
+    \addplot[relu model, line width=0.6pt] table[x=x, y=y, col sep=comma] {build/dim-curve-relu-seed\s.csv};
+  }
+\end{axis}
+% Direct labels for the sticky fractions, outside the frame on the right.
+\foreach \v/\shift/\name in {1/0/{1, a dimension of its own}, 0.75/0/{$\tfrac34$, tetrahedron},
+    0.6667/0/{$\tfrac23$, triangle}, 0.5/0/{$\tfrac12$, antipodal pair}, 0.4/0.13/{$\tfrac25$, pentagon},
+    0.375/-0.13/{$\tfrac38$, square antiprism}} {
+  \path (a.south east) -- (a.north east) coordinate[pos=\v/1.08] (lab);
+  \node[note, anchor=west, font=\scriptsize\itshape] at ($(lab)+(0.12,\shift)$) {\name};
+}
+\node[note, anchor=north, align=center] at ($(a.south)+(0,-1.05)$)
+  {400 features in 30 dimensions, uniform importance. Spot: $m / \norm{\mb{W}}^2_F$ for the ReLU model, seeds 0 to 4;
+   dashed: the linear model.\\ Grey circles: each represented feature's dimensionality $D_i$, all seeds. Dotted: the fractions
+   the paper names.};
+\end{tikzpicture}
+\end{figurecanvas}
+\end{document}

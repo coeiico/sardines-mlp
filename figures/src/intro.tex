@@ -1,0 +1,66 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{latentfig}
+\input{roles}
+\input{build/intro-values}
+\pgfplotsset{
+  sparsity/.style={engraved, xmin=1, xmax=1000, xtick={1,10,100,1000},
+    xticklabels={1,10,100,1\,000}, xlabel={$1/(1-S)$, how rarely a feature is active}},
+}
+\begin{document}
+\begin{figurecanvas}
+\begin{tikzpicture}
+\begin{scope}[x=0.118cm, y=0.118cm]
+\foreach \model/\k/\letter/\L/\title [count=\i from 0] in {
+    linear/6/a/A/{Linear.},
+    relu/0/b/B/{ReLU.},
+    relu/2/c/C/{ReLU.},
+    relu/4/d/D/{ReLU.},
+    relu/6/e/E/{ReLU.}} {
+  \begin{scope}[shift={(\i*25,0)}]
+    \input{build/intro-\model-\k.tikz}
+    \node[head] at (0,24.6) {(\letter)\enspace \title};
+    \node[formula] at (0,21.6) {$1-S=\csname density\L\endcsname$};
+    \node[note, anchor=north west] at (0,-2.6) {\csname count\L\endcsname\ features kept};
+  \end{scope}
+}
+\node[note, anchor=east] at (-0.6,10) {$\mb{W}\tp\mb{W}$};
+\node[note, anchor=east] at (-0.6,-1.3) {$\vb{b}$};
+% The colour key: ink for negative, white for 0, spot for positive.
+\begin{scope}[shift={(125,4)}]
+  \foreach \v in {0,...,19} {
+    \pgfmathtruncatemacro{\s}{abs(\v-10)*10}
+    \ifnum\v<10 \fill[ink!\s] (0,\v) rectangle ++(1.2,1); \else \fill[spot!\s] (0,\v) rectangle ++(1.2,1); \fi
+  }
+  \draw[mframe] (0,0) rectangle (1.2,20);
+  \node[note, anchor=west] at (1.6,19.5) {$+1$};
+  \node[note, anchor=west] at (1.6,10) {$0$};
+  \node[note, anchor=west] at (1.6,0.5) {$-1$};
+\end{scope}
+\end{scope}
+
+\begin{axis}[sparsity, xmode=log, name=f, at={(0,-1.55cm)}, anchor=north west, width=0.37\figwidth, height=0.22\figwidth,
+    ymin=0, ymax=20, ytick={0,5,10,15,20}, ylabel={features kept ($\norm{\vb{W}_i} > 0.5$)}]
+  \foreach \s in {0,...,4} {
+    \addplot[relu model, line width=0.5pt] table[x expr=1/\thisrow{density}, y=relu_represented_seed\s, col sep=comma] {data/intro-losses.csv};
+  }
+  \addplot[linear model] table[x expr=1/\thisrow{density}, y=linear_represented_seed0, col sep=comma] {data/intro-losses.csv};
+  \node[note, text=spot, anchor=south east] at (axis cs:900,14.2) {ReLU, seeds 0 to 4};
+  \node[note, text=ink, anchor=north east] at (axis cs:900,4.4) {linear, every seed: $m = 5$};
+\end{axis}
+\node[head] at ($(f.north west)+(0,0.25)$) {(f)\enspace Features kept.};
+
+\begin{axis}[sparsity, xmode=log, name=g, at={($(f.east -| f.outer east)+(0.9cm,0)$)}, anchor=west, width=0.37\figwidth, height=0.22\figwidth,
+    ymode=log, ymin=0.08, ymax=1.5, ytick={0.1,0.2,0.5,1}, yticklabels={0.1,0.2,0.5,1},
+    ylabel={loss / keep-the-top-5 loss}]
+  \addplot[level line, domain=1:1000] {1};
+  \foreach \s in {0,...,4} {
+    \addplot[relu model, line width=0.5pt] table[x expr=1/\thisrow{density}, y expr=\thisrow{relu_seed\s}/\thisrow{keep_top_m}, col sep=comma] {data/intro-losses.csv};
+  }
+  \addplot[linear model] table[x expr=1/\thisrow{density}, y expr=\thisrow{linear_seed0}/\thisrow{keep_top_m}, col sep=comma] {data/intro-losses.csv};
+  \node[note, text=spot, anchor=north east] at (axis cs:900,0.3) {ReLU};
+  \node[note, text=ink, anchor=south east] at (axis cs:900,1.08) {linear};
+\end{axis}
+\node[head] at ($(g.north west)+(0,0.25)$) {(g)\enspace Loss against keeping the top 5 features.};
+\end{tikzpicture}
+\end{figurecanvas}
+\end{document}

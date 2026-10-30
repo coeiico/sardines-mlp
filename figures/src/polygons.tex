@@ -1,0 +1,34 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{latentfig}
+\input{roles}
+\input{build/polygons-values}
+\begin{document}
+\begin{figurecanvas}
+\begin{tikzpicture}
+\begin{scope}[x=0.82cm, y=0.82cm]
+\foreach \letter/\L [count=\i from 0] in {a/A, b/B, c/C, d/D, e/E, f/F, g/G} {
+  \begin{scope}[shift={(\i*2.75,0)}]
+    \input{build/polygons-\i.tikz}
+    \node[head] at (-1.25,1.85) {(\letter)};
+    \node[formula] at (-0.75,1.85) {$1-S=\csname density\L\endcsname$};
+    \node[note, anchor=north] at (0,-1.3) {\csname shape\L\endcsname, \csname shapeCount\L\endcsname\ of 5};
+  \end{scope}
+}
+\end{scope}
+
+% The strip: every density (columns, dense to sparse) and seed (rows).
+\begin{scope}[shift={(0.35cm,-2.9cm)}, x=0.71cm, y=0.36cm]
+  \input{build/polygons-shapes.tikz}
+  \foreach \s in {0,...,4} { \node[note, anchor=east] at (-0.6,-\s) {seed \s}; }
+  \draw[ink, line width=0.4pt, -{Latex[length=1.6mm, width=1.1mm]}] (0,-5.0) -- (20,-5.0);
+  \node[note, anchor=north west] at (0,-5.25) {$1-S=1$};
+  \node[note, anchor=north east] at (20,-5.25) {$1-S=0.01$, 21 log-spaced densities};
+  \node[head] at (-2.6,1.4) {(h)\enspace Features represented, every seed and density.};
+\end{scope}
+\node[note, anchor=north, align=center] at (7.2cm,-5.7cm)
+  {(a–g) The ReLU model's columns $\vb{W}_i$: seed 0 in ink, seeds 1 to 4 in grey, each turned so its longest\\
+   column points right; dotted, the unit circle. Under each, the most common shape and how many seeds make it.\\
+   (h) Spot: a regular pentagon. Ink: another regular polygon. Grey: features not evenly spread.};
+\end{tikzpicture}
+\end{figurecanvas}
+\end{document}
