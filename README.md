@@ -50,8 +50,6 @@ Not everything the paper shows appears. No feature settles at ¾ (the tetrahedro
 
 ## How it works
 
-The owner knows MLPs and PCA. This is what is new here.
-
 - **Features.** The model's input is n synthetic features. Each is 0 with probability S, the sparsity, and otherwise uniform on [0, 1]. Feature i has an importance Iᵢ, a weight in the loss: L = E[Σᵢ Iᵢ (xᵢ − x'ᵢ)²]. Real networks plausibly see many more potential features than they have neurons, most of them rarely active, and some mattering more than others. This toy has those three properties and nothing else.
 - **Tied weights.** h = Wx compresses the n features to m < n numbers, and x' = ReLU(Wᵀh + b) reads them back with the same matrix. Column Wᵢ is then unambiguously "the direction for feature i". WᵀW holds every pair's overlap: Wᵢ · Wⱼ is how much of feature j comes out on feature i's output.
 - **Why the linear model can't do it.** Without the ReLU, interference is symmetric and always costs. Two features sharing a direction pollute each other whenever either is active, so the best the linear model can do is give m features orthogonal directions and drop the rest. That is PCA on the importance-weighted features.
